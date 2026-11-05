@@ -4,7 +4,16 @@ const URL = process.env.URL || 'http://localhost:4173/';
 const SHOTS = process.env.SHOTS;
 (async () => {
   const { browser, page, errors } = await open(URL);
+  await page.waitForSelector('.h-title');
+  ok(await page.locator('.scale .arm').isVisible(), 'home: the scale is drawn');
+  ok((await page.locator('.h-legend .vc').count()) === 4, 'home: verdict legend');
+  await page.locator('.h-legend .vc.v-refuted').click();
+  ok((await page.locator('.stamp-btn .stamp').innerText()).includes('הופרך'), 'home: legend filters what the scale weighs');
+  if (SHOTS) await page.screenshot({ path: `${SHOTS}/desk-home.png` });
+  await page.locator('.stamp-btn').click();
   await page.waitForSelector('.row');
+  ok(page.url().includes('#/tests'), 'home: the stamp opens its test');
+  await page.locator('.chip.all').click();
   ok(await page.locator('ai-menu .logo').isVisible(), 'A&I logo button in the top bar');
   ok(!(await page.locator('header >> text=העתקת קישור').first().isVisible().catch(() => false)), 'no loose development buttons in the bar');
   const n = await page.locator('.row').count(); ok(n === 17, `17 tests (${n})`);
@@ -38,7 +47,7 @@ const SHOTS = process.env.SHOTS;
   ok(errors.length === 0, `no page errors ${errors.join('|')}`);
   await browser.close();
 
-  const mob = await open(URL, { viewport: { width: 390, height: 844 }, reduced: true });
+  const mob = await open(URL + '#/tests', { viewport: { width: 390, height: 844 }, reduced: true });
   await mob.page.waitForSelector('.row');
   const fm = await fit(mob.page); ok(fm.ratio <= 1.5 && !fm.hscroll, `phone fits ${JSON.stringify(fm)}`);
   if (SHOTS) await mob.page.screenshot({ path: `${SHOTS}/mob-list.png` });

@@ -3,18 +3,20 @@ import { DOMAIN, ROWS, UNTESTED, amirotLink, count, longest, olamLink, yearLabel
 import { VERDICT, type Verdict } from './data/tests';
 import { Rich } from './Rich';
 import { Dialog, InfoIcon } from './Dialog';
+import Home from './Home';
 
-type View = 'tests' | 'wait';
+type View = 'home' | 'tests' | 'wait';
 type Filter = Verdict | 'untested' | null;
 const ORDER: Verdict[] = ['confirmed', 'cond', 'literal', 'refuted'];
 const readHash = () => {
   const [p, q = ''] = location.hash.replace(/^#\/?/, '').split('?');
   const sp = new URLSearchParams(q);
-  return { view: (p === 'wait' ? 'wait' : 'tests') as View, t: sp.get('t'), f: (sp.get('f') as Filter) || null };
+  return { view: (p === 'wait' ? 'wait' : p === 'tests' || sp.get('t') || sp.get('f') ? 'tests' : 'home') as View, t: sp.get('t'), f: (sp.get('f') as Filter) || null };
 };
 const writeHash = (view: View, t: string | null, f: Filter) => {
   const sp = new URLSearchParams(); if (t) sp.set('t', t); if (f) sp.set('f', f);
-  const h = `#/${view === 'wait' ? 'wait' : ''}${sp.toString() ? '?' + sp : ''}`;
+  if (view === 'home') { history.replaceState(null, '', '#/'); return; }
+  const h = `#/${view}${sp.toString() ? '?' + sp : ''}`;
   history.replaceState(null, '', h);
 };
 
@@ -58,7 +60,7 @@ export default function App() {
     <div className="app-shell keep-mobile">
       <header className="topbar">
         <div className="topbar-in">
-          <a className="brand" href="#/" onClick={(e) => { e.preventDefault(); setView('tests'); setFilter(null); }}><img src="/icon.svg" alt="" /><span>אמירה במבחן המדע</span></a>
+          <a className="brand" href="#/" onClick={(e) => { e.preventDefault(); setView('home'); setFilter(null); }}><img src="/icon.svg" alt="" /><span>אמירה במבחן המדע</span></a>
           <nav className="tabs" aria-label="ניווט">
             <button className="tab" aria-current={view === 'tests' ? 'page' : undefined} onClick={() => setView('tests')}>המבחנים</button>
             <button className="tab" aria-current={view === 'wait' ? 'page' : undefined} onClick={() => setView('wait')}>כמה זמן חיכו</button>
@@ -70,6 +72,9 @@ export default function App() {
         </div>
       </header>
 
+      {view === 'home' ? (
+        <Home open={(id) => { setSel(id); setFilter(null); setView('tests'); }} openUntested={() => { setFilter('untested'); setView('tests'); }} go={(v) => setView(v)} />
+      ) : (
       <main className="app-main focus-aside lab">
         <section className="board">
           <div className="lens">
@@ -127,6 +132,7 @@ export default function App() {
           )}
         </aside>
       </main>
+      )}
       {info && <Method onClose={() => setInfo(false)} />}
     </div>
   );

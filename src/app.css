@@ -106,3 +106,27 @@
 
 .w-bar.ahead { background: repeating-linear-gradient(90deg, var(--v) 0 3px, transparent 3px 6px); }
 .w-n.ahead { color: var(--v-cond); font-size: 11.5px; }
+
+/* דף הבית: מאזני המעבדה */
+.scale { direction: ltr; }
+.scale .table { stroke: var(--rule); stroke-width: 2; }
+.scale .post { fill: #1A1A18; }
+.scale .beam-bar { fill: #1A1A18; }
+.scale .pivot { fill: #fff; stroke: #1A1A18; stroke-width: 4; }
+.scale .chain { stroke: var(--ink-mute); stroke-width: 1.5; }
+.scale .pan { fill: #F4F3EF; stroke: #1A1A18; stroke-width: 2; }
+.scale .pan.disc { fill: #EEF4F0; }
+.scale .arm, .scale .arm > g { transition: transform 1.1s cubic-bezier(.3, 1.4, .5, 1); }
+.pan-text { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; text-align: center; gap: 2px; animation: rise .6s both; }
+.pan-l { font: 600 14px var(--mono), var(--font); color: var(--ink-mute); }
+.pan-say { font: 500 28px/1.25 var(--serif); color: var(--ink); }
+.pan-disc { font: 700 23px var(--font); color: #2F7A55; }
+.pan-t { font: 400 16px/1.3 var(--font); color: var(--ink-soft); }
+.stamp-btn { background: none; border: 0; padding: 0; width: 100%; height: 100%; display: grid; place-items: center; cursor: pointer; animation: stampIn .5s .5s both; }
+@keyframes stampIn { from { transform: scale(1.8); opacity: 0; } to { transform: none; opacity: 1; } }
+.stamp-btn .stamp.big { font-size: 20px; padding: 10px 16px; background: #fff; }
+.scale-line { margin: 0; padding: 4px 16px; text-align: center; font-size: 16px; font-weight: 600; }
+.h-legend .chip { font-size: 13px; }
+.h-legend .dim-note { color: var(--ink-mute); margin-inline-start: auto; font-size: 12px; }
+.link-btn { background: none; border: 0; padding: 2px 4px; font: inherit; font-size: 13px; color: var(--ink-mute); text-decoration: underline; cursor: pointer; }
+@media (max-width: 720px) { .pan-say { font-size: 18px; } .pan-disc { font-size: 15px; } .pan-t { display: none; } }
